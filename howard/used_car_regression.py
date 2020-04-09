@@ -15,13 +15,15 @@ from sklearn.model_selection import KFold
 class UsedCarRegression:
     """
     initializer needs DataFrame which is filtered by data from 'vinaudit.com' api.
-    생성할때, 전처리가 잘된(아웃라이어가 제거된) 데이터를 넣으시면 됩니다.
+    객체를 생성할때, 전처리가 잘된(아웃라이어가 제거된) 데이터를 넣으시면 됩니다.
     """
     def __init__(self, df):
         self.df_origin = df
         self.df = df
-        test = {}
-        test2 = []
+        
+        
+        len_under_10_dict = {}
+        len_under_10_list = []
         end_num = 10
         start_num = 2
         
@@ -31,10 +33,10 @@ class UsedCarRegression:
                 for i in range(len_under_10):
                     index = self.df[self.df[column] == self.df[column].value_counts()[(self.df[column].value_counts() < end_num) & (df[column].value_counts() > start_num)].index[i]].index.values
                     value = self.df[column].value_counts()[(self.df[column].value_counts() < end_num) & (df[column].value_counts() > start_num)].index[i]  
-                    test[value] = index
-        test2.append(test)
+                    len_under_10_dict[value] = index
+        len_under_10_list.append(len_under_10_dict)
         
-        index_df = pd.DataFrame(test2)
+        index_df = pd.DataFrame(len_under_10_list)
         
         self.for_test_data = []
         self.for_train_data_train = []
@@ -78,10 +80,7 @@ class UsedCarRegression:
     def model_fit(self, formula, random_state=0):
         """
         "formula" => sm.OLS.from_formula("formula")
-        포뮬러 식을 str타입으로 넣으시면 됩니다.
-        
-        return result, train_data, test_data
-        result 객체와, train_data, test_data를 반환합니다
+        return : result, train_data, test_data, 포뮬러 식을 str타입으로 넣으면, result 객체와, train_data, test_data를 반환합니다
         """
 #         X = self.df[self.df.columns.difference(['price'])]
 #         Y = self.df['price']
@@ -101,12 +100,9 @@ class UsedCarRegression:
     
     def cross_validation(self,formula,random_state=0,cv=10):
         """
-        "formula" => sm.OLS.from_formula("formula")
-        포뮬러 식을 str타입으로 넣으시면 됩니다.
-        교차검증된 값을 반환합니다.
+        "formula" => sm.OLS.from_formula("formula"), 포뮬러 식을 str타입으로 넣으면 교차검증된 값을 list로 반환합니다.
         """
         kf = KFold(cv, shuffle=True, random_state=random_state)
-        print(cv)
         model_cross_val_score = []
         for X_train_index, X_test_index in kf.split(self.train_data):
 
@@ -119,6 +115,12 @@ class UsedCarRegression:
             
             model = sm.OLS.from_formula(formula, X_train)
             result = model.fit()           
-            pred = result.predict(X_test)
-            model_cross_val_score.append(r2_score(np.log(X_test.price),pred))
+            pred = result.predict(X_test)           
+            r2 = r2_score(np.log(X_test.price),pred)
+            
+            n = X_test.shape[0] 
+            p = pd.get_dummies(X_test).shape[1]
+            adj_r = 1 - ((1 - r2) * (n - 1)) / (n - p - 1)
+            
+            model_cross_val_score.append(adj_r)
         return model_cross_val_score
