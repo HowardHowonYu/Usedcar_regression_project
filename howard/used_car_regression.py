@@ -84,7 +84,9 @@ class UsedCarRegression:
         """
 #         X = self.df[self.df.columns.difference(['price'])]
 #         Y = self.df['price']
-
+        self.train_ls = self.for_train_data_train
+        self.test_ls = self.for_train_data_test
+        
 
         self.train_data, self.test_data = train_test_split(self.df, test_size = .20,random_state=random_state)
         
@@ -95,7 +97,7 @@ class UsedCarRegression:
         
         model = sm.OLS.from_formula(formula, self.train_data)
         result = model.fit()
-        return result, self.train_data, self.test_data
+        return result, self.train_data, self.test_data, self.train_ls, self.test_ls
 
     
     def cross_validation(self,formula,random_state=0,cv=10):
@@ -124,3 +126,35 @@ class UsedCarRegression:
             
             model_cross_val_score.append(adj_r)
         return model_cross_val_score
+
+    
+    
+    def regularized_method(self,formula,random_state=0,cv=10, alpha=0.0001, L1_wt=0):
+        """
+        "formula" => sm.OLS.from_formula("formula"), 포뮬러 식을 str타입으로 넣으면 교차검증된 값을 list로 반환합니다.
+        """
+        kf = KFold(cv, shuffle=True, random_state=random_state)
+        model_cross_val_score = []
+        for X_train_index, X_test_index in kf.split(self.train_data):
+
+            X_train= self.train_data.iloc[X_train_index]
+            X_test = self.train_data.iloc[X_test_index]
+
+            X_train = pd.concat([X_train, self.df_origin[self.df_origin.index.isin([element for array in self.for_train_data_train for element in array])]], axis=0)
+            
+            X_test = pd.concat([X_test, self.df_origin[self.df_origin.index.isin([element for array in self.for_train_data_test for element in array])]], axis=0)
+            
+            model = sm.OLS.from_formula(formula, X_train)
+            result = model.fit_regularized(alpha=alpha, L1_wt=L1_wt)
+            pred = result.predict(X_test)           
+            r2 = r2_score(np.log(X_test.price),pred)
+            
+            n = X_test.shape[0] 
+            p = pd.get_dummies(X_test).shape[1]
+            adj_r = 1 - ((1 - r2) * (n - 1)) / (n - p - 1)
+            
+            model_cross_val_score.append(adj_r)
+        return np.mean(model_cross_val_score)
+    
+    
+    
