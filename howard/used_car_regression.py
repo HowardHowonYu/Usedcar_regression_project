@@ -135,7 +135,7 @@ class UsedCarRegression:
         """
         kf = KFold(cv, shuffle=True, random_state=random_state)
         model_cross_val_score = []
-        for X_train_index, X_test_index in kf.split(self..):
+        for X_train_index, X_test_index in kf.split(self.train_data):
 
             X_train= self.train_data.iloc[X_train_index]
             X_test = self.train_data.iloc[X_test_index]
