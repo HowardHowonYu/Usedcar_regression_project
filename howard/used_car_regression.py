@@ -154,7 +154,7 @@ class UsedCarRegression:
             adj_r = 1 - ((1 - r2) * (n - 1)) / (n - p - 1)
             
             model_cross_val_score.append(adj_r)
-        return np.mean(model_cross_val_score)
+        return np.mean(model_cross_val_score), result, model_cross_val_score
     
     
     
