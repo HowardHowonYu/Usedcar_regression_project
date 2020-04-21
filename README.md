@@ -7,5 +7,5 @@
 - 데이터 출처 : https://www.kaggle.com/austinreese/craigslist-carstrucks-data (캐글)
 
 ## 분석 결과
-
+https://nbviewer.jupyter.org/github/HowardHowonYu/usedcar_regression_project/blob/howard/howard/used_car_regression_final.ipynb
 
