@@ -33,7 +33,7 @@
   <img src="/howard/regression_project/2.png" width="1350px">
   데이터에서 가장 많은 매물인 2012년식 포드 F-150 FX4 차량운 주행거리 3만 마일 (약 4만8천km) 지점에서 가격이 급격히 떨어진다.
 
-  - 가설 2 : 미국은 각 주별로 가격의 차이가 있을 것이다.
 
+  - 가설 2 : 미국은 각 주별로 가격의 차이가 있을 것이다.
   <img src="/howard/regression_project/1.png" width="1350px">
   포드 F-150 FX4 차량의 워싱턴 주와 코네티컷 주의 차량 가격의 차는 약 1만불 정도 이다.
