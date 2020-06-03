@@ -17,16 +17,18 @@
 - 따라서, **이상치 탐색 및 제거**가 중요.
 
 ## Issue solving
-- **vin(차대 번호)**를 활용한 이상치 탐색 작업 진행
+- **vin(차대 번호)** 를 활용한 이상치 탐색 작업 진행
 - https://www.vinaudit.com/ 에서 제공하는 api를 이용하여 허위 매물 탐색 및 이력 조회
 - 위 api는 미국 정부기관에서 관리하는 데이터베이스를 기반으로 제작, 신뢰도가 높음
 
 ## Result
 - R-square 약 0.88 달성
+
 <img src="/howard/regression_project/3.png" width="1350px">
 
 
 - **가설 검증**
+
   1. 미국의 중고차도 한국과 마찬가지로 약 5만km를 기준으로 가격이 급격히 떨어질 것이다.
 <img src="/howard/regression_project/2.png" width="1350px">
   - 데이터에서 가장 많은 매물인 2012년식 포드 F-150 FX4 차량운 주행거리 3만 마일 (약 4만8천km) 지점에서 가격이 급격히 떨어진다.
